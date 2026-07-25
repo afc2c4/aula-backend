@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  catalogo:
+    build: ./catalogo
+    ports:
+      - "3001:3001"
+    networks:
+      - ecommerce-net
+      
+  carrinho:
+    build: ./carrinho
+    ports:
+      - "3002:3002"
+    networks:
+      - ecommerce-net
+    environment:
+      - CATALOGO_URL=http://catalogo:3001
+
+networks:
+  ecommerce-net:
