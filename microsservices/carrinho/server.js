@@ -162,13 +162,24 @@ app.delete('/itens/:id', async (req, res) => {
   }
 });
 
-inicializarBanco()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Carrinho service rodando em http://0.0.0.0:${PORT}`);
+if (require.main === module) {
+  inicializarBanco()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Carrinho service rodando em http://0.0.0.0:${PORT}`);
+      });
+    })
+    .catch((erro) => {
+      console.error('Falha ao iniciar carrinho service:', erro.message);
+      process.exit(1);
     });
-  })
-  .catch((erro) => {
-    console.error('Falha ao iniciar carrinho service:', erro.message);
-    process.exit(1);
-  });
+}
+
+module.exports = {
+  app,
+  db,
+  run,
+  all,
+  get,
+  inicializarBanco
+};

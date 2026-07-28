@@ -195,7 +195,16 @@ async function iniciarServidor() {
   });
 }
 
-iniciarServidor().catch((erro) => {
-  console.error('Falha ao iniciar auth service:', erro.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  iniciarServidor().catch((erro) => {
+    console.error('Falha ao iniciar auth service:', erro.message);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  app,
+  pool,
+  inicializarBanco,
+  iniciarServidor
+};
