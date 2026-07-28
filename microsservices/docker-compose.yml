@@ -1,21 +1,27 @@
 version: '3.8'
 
 services:
-  catalogo:
-    build: ./catalogo
+  # Microsserviço de Autenticação (Gera os tokens JWT)
+  auth-service:
+    build: ./auth
     ports:
-      - "3001:3001"
-    networks:
-      - ecommerce-net
-      
-  carrinho:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - HOST=0.0.0.0
+      - JWT_SECRET=minha_chave_secreta_super_segura_123
+
+  # Microsserviço de Carrinho (Valida os tokens JWT)
+  carrinho-service:
     build: ./carrinho
     ports:
       - "3002:3002"
-    networks:
-      - ecommerce-net
     environment:
-      - CATALOGO_URL=http://catalogo:3001
+      - PORT=3002
+      - JWT_SECRET=minha_chave_secreta_super_segura_123
 
-networks:
-  ecommerce-net:
+  # Microsserviço de Catálogo
+  catalogo-service:
+    build: ./catalogo
+    ports:
+      - "3001:3001"

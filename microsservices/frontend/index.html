@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste de Comunicação entre Microsserviços</title>
+  <style>
+    body { font-family: sans-serif; margin: 30px; background: #eceff1; }
+    .box { background: white; padding: 20px; border-radius: 6px; width: 450px; margin-bottom: 15px; }
+    input, button { display: block; width: 100%; margin: 8px 0; padding: 10px; }
+    button { background: #2e7d32; color: white; border: none; font-weight: bold; cursor: pointer; }
+    .sec { background: #1565c0; }
+    pre { background: #1e1e1e; color: #a6e22e; padding: 10px; }
+  </style>
+</head>
+<body>
+
+  <h2>Integração Front-end + Microsserviços</h2>
+
+  <!-- PASSO 1 -->
+  <div class="box">
+    <h3>1. Auth Service (Porta 3003)</h3>
+    <input type="email" id="email" value="dev@microsservicos.com">
+    <input type="password" id="senha" value="123456">
+    <button onclick="fazerLogin()">Fazer Login & Salvar Token</button>
+  </div>
+
+  <!-- PASSO 2 -->
+  <div class="box">
+    <h3>2. Carrinho Service (Porta 3001)</h3>
+    <p>Tenta consultar o carrinho no outro serviço usando o token obtido.</p>
+    <button class="sec" onclick="buscarCarrinho()">Consultar Carrinho Protegido</button>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="box" style="width: 600px;">
+    <h3>Token Atual no LocalStorage:</h3>
+    <small id="tokenDisplay">Nenhum token salvo.</small>
+
+    <h3>Resposta do Microsserviço:</h3>
+    <pre id="respostaLog">Aguardando ações...</pre>
+  </div>
+
+  <script>
+    const AUTH_API = 'http://localhost:3003';
+    const CARRINHO_API = 'http://localhost:3001';
+
+    // 1. Cadastra/Autentica no serviço de AUTH
+    async function fazerLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('senha').value;
+
+      // Cria a conta primeiro (caso não exista)
+      await fetch(`${AUTH_API}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      // Executa o Login
+      const res = await fetch(`${AUTH_API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.token) {
+        // Armazena o token recebido no navegador
+        localStorage.setItem('jwt_token', data.token);
+        document.getElementById('tokenDisplay').innerText = data.token;
+      }
+      document.getElementById('respostaLog').innerText = JSON.stringify(data, null, 2);
+    }
+
+    // 2. Consome o serviço de CARRINHO enviando o token no Header
+    async function buscarCarrinho() {
+      const token = localStorage.getItem('jwt_token');
+
+      /* Sintaxe: Envio do token via Header Authorization */
+      const res = await fetch(`${CARRINHO_API}/carrinho`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Passagem padrão do JWT
+        }
+      });
+
+      const data = await res.json();
+      document.getElementById('respostaLog').innerText = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
