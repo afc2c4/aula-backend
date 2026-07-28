@@ -6,7 +6,7 @@
  * - next: Função para passar a execução para o próximo handler/rota.
  * ========================================================================== */
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'minha_chave_secreta_super_segura_123';
+const JWT_SECRET = process.env.JWT_SECRET || 'troque_esta_chave_em_producao';
 
 function validarToken(req, res, next) {
   /* Sintaxe: Extração do cabeçalho "Authorization" (Formato: Bearer <TOKEN>) */

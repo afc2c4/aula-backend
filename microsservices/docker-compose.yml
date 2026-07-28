@@ -11,17 +11,24 @@ services:
       - HOST=0.0.0.0
       - JWT_SECRET=minha_chave_secreta_super_segura_123
 
-  # Microsserviço de Carrinho (Valida os tokens JWT)
+  # Microsserviço de Carrinho (SQLite)
   carrinho-service:
     build: ./carrinho
     ports:
       - "3002:3002"
     environment:
       - PORT=3002
-      - JWT_SECRET=minha_chave_secreta_super_segura_123
 
-  # Microsserviço de Catálogo
+  # Microsserviço de Catálogo (MongoDB)
   catalogo-service:
     build: ./catalogo
     ports:
       - "3001:3001"
+
+  # Microsserviço de Pedidos (MySQL)
+  pedidos-service:
+    build: ./pedidos
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004

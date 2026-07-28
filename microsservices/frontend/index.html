@@ -19,75 +19,310 @@
   <!-- PASSO 1 -->
   <div class="box">
     <h3>1. Auth Service (Porta 3003)</h3>
-    <input type="email" id="email" value="dev@microsservicos.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Database-per-Service</title>
     <input type="password" id="senha" value="123456">
-    <button onclick="fazerLogin()">Fazer Login & Salvar Token</button>
-  </div>
+    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap');
 
-  <!-- PASSO 2 -->
-  <div class="box">
-    <h3>2. Carrinho Service (Porta 3001)</h3>
+    :root {
+      --ink: #0d1b2a;
+      --sea: #0b6e4f;
+      --amber: #f2a900;
+      --paper: #f8f4e3;
+      --card: #fffdf6;
+      --line: rgba(13, 27, 42, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Chakra Petch', sans-serif;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(242, 169, 0, 0.2), transparent 35%),
+        radial-gradient(circle at 90% 15%, rgba(11, 110, 79, 0.25), transparent 30%),
+        linear-gradient(135deg, #f4f1de 0%, #d8e2dc 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+      animation: rise 500ms ease-out;
+    }
+
+    .hero {
+      background: linear-gradient(90deg, rgba(13, 27, 42, 0.95), rgba(11, 110, 79, 0.9));
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      letter-spacing: 0.04em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 6px 24px rgba(13, 27, 42, 0.08);
+      animation: fadeIn 650ms ease both;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+    }
+
+    .meta {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 6px 0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: transform 150ms ease, filter 150ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    .post {
+      background: #0b6e4f;
+    }
+
+    .get {
+      background: #1b4965;
+    }
+
+    .log {
+      background: #111827;
+      color: #d1fae5;
+      border-radius: 14px;
+      border: 1px solid #374151;
+      padding: 14px;
+      min-height: 220px;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      overflow: auto;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     <p>Tenta consultar o carrinho no outro serviço usando o token obtido.</p>
     <button class="sec" onclick="buscarCarrinho()">Consultar Carrinho Protegido</button>
   </div>
+  <main class="container">
+    <section class="hero">
+      <h1>Dashboard de Microsserviços</h1>
+      <p>Teste rápido do padrão Database-per-Service: Postgres, MongoDB, SQLite e MySQL.</p>
+    </section>
 
-  <!-- RESULTADOS -->
-  <div class="box" style="width: 600px;">
-    <h3>Token Atual no LocalStorage:</h3>
-    <small id="tokenDisplay">Nenhum token salvo.</small>
+    <section class="grid">
+      <article class="card">
+        <h2>Auth • PostgreSQL (3003)</h2>
+        <p class="meta">POST cria usuário, GET lista usuários.</p>
+        <button class="post" onclick="criarUsuarioAuth()">POST /usuarios</button>
+        <button class="get" onclick="listarUsuariosAuth()">GET /usuarios</button>
+      </article>
 
-    <h3>Resposta do Microsserviço:</h3>
-    <pre id="respostaLog">Aguardando ações...</pre>
-  </div>
+      <article class="card">
+        <h2>Catálogo • MongoDB (3001)</h2>
+        <p class="meta">POST cria produto, GET lista produtos.</p>
+        <button class="post" onclick="criarProdutoCatalogo()">POST /produtos</button>
+        <button class="get" onclick="listarProdutosCatalogo()">GET /produtos</button>
+      </article>
+
+      <article class="card">
+        <h2>Carrinho • SQLite (3002)</h2>
+        <p class="meta">POST cria item, GET lista itens do usuário.</p>
+        <button class="post" onclick="criarItemCarrinho()">POST /itens</button>
+        <button class="get" onclick="listarItensCarrinho()">GET /itens?usuarioId=1</button>
+      </article>
+
+      <article class="card">
+        <h2>Pedidos • MySQL (3004)</h2>
+        <p class="meta">POST cria pedido, GET lista pedidos.</p>
+        <button class="post" onclick="criarPedido()">POST /pedidos</button>
+        <button class="get" onclick="listarPedidos()">GET /pedidos</button>
+      </article>
+    </section>
+
+    <section>
+      <h2>Resposta</h2>
+      <pre id="respostaLog" class="log">Aguardando ações...</pre>
+    </section>
+  </main>
 
   <script>
     const AUTH_API = 'http://localhost:3003';
-    const CARRINHO_API = 'http://localhost:3001';
+    const CATALOGO_API = 'http://localhost:3001';
+    const CARRINHO_API = 'http://localhost:3002';
+    const PEDIDOS_API = 'http://localhost:3004';
 
-    // 1. Cadastra/Autentica no serviço de AUTH
-    async function fazerLogin() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('senha').value;
-
-      // Cria a conta primeiro (caso não exista)
-      await fetch(`${AUTH_API}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      // Executa o Login
-      const res = await fetch(`${AUTH_API}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-      if (data.token) {
-        // Armazena o token recebido no navegador
-        localStorage.setItem('jwt_token', data.token);
-        document.getElementById('tokenDisplay').innerText = data.token;
-      }
-      document.getElementById('respostaLog').innerText = JSON.stringify(data, null, 2);
+    function logResposta(titulo, dados) {
+      const conteudo = `${titulo}\n${'-'.repeat(54)}\n${JSON.stringify(dados, null, 2)}`;
+      document.getElementById('respostaLog').innerText = conteudo;
     }
 
-    // 2. Consome o serviço de CARRINHO enviando o token no Header
-    async function buscarCarrinho() {
-      const token = localStorage.getItem('jwt_token');
+    async function requestJSON(url, options) {
+      const resposta = await fetch(url, options);
+      let json;
+      try {
+        json = await resposta.json();
+      } catch (_erro) {
+        json = { mensagem: 'Sem corpo JSON na resposta.' };
+      }
 
-      /* Sintaxe: Envio do token via Header Authorization */
-      const res = await fetch(`${CARRINHO_API}/carrinho`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Passagem padrão do JWT
-        }
-      });
+      if (!resposta.ok) {
+        throw new Error(`${resposta.status} - ${JSON.stringify(json)}`);
+      }
 
-      const data = await res.json();
-      document.getElementById('respostaLog').innerText = JSON.stringify(data, null, 2);
+      return json;
+    }
+
+    async function criarUsuarioAuth() {
+      try {
+        const payload = {
+          email: `dev${Date.now()}@microsservicos.com`,
+          password: '123456',
+          nome: 'Dev Demo'
+        };
+        const data = await requestJSON(`${AUTH_API}/usuarios`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        logResposta('Auth > POST /usuarios', data);
+      } catch (erro) {
+        logResposta('Erro em Auth > POST /usuarios', { erro: erro.message });
+      }
+    }
+
+    async function listarUsuariosAuth() {
+      try {
+        const data = await requestJSON(`${AUTH_API}/usuarios`);
+        logResposta('Auth > GET /usuarios', data);
+      } catch (erro) {
+        logResposta('Erro em Auth > GET /usuarios', { erro: erro.message });
+      }
+    }
+
+    async function criarProdutoCatalogo() {
+      try {
+        const payload = {
+          nome: `Produto ${Date.now()}`,
+          preco: 99.9,
+          categoria: 'demo',
+          estoque: 12
+        };
+        const data = await requestJSON(`${CATALOGO_API}/produtos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        logResposta('Catalogo > POST /produtos', data);
+      } catch (erro) {
+        logResposta('Erro em Catalogo > POST /produtos', { erro: erro.message });
+      }
+    }
+
+    async function listarProdutosCatalogo() {
+      try {
+        const data = await requestJSON(`${CATALOGO_API}/produtos`);
+        logResposta('Catalogo > GET /produtos', data);
+      } catch (erro) {
+        logResposta('Erro em Catalogo > GET /produtos', { erro: erro.message });
+      }
+    }
+
+    async function criarItemCarrinho() {
+      try {
+        const payload = {
+          usuarioId: '1',
+          produtoId: `P-${Date.now()}`,
+          quantidade: 2
+        };
+        const data = await requestJSON(`${CARRINHO_API}/itens`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        logResposta('Carrinho > POST /itens', data);
+      } catch (erro) {
+        logResposta('Erro em Carrinho > POST /itens', { erro: erro.message });
+      }
+    }
+
+    async function listarItensCarrinho() {
+      try {
+        const data = await requestJSON(`${CARRINHO_API}/itens?usuarioId=1`);
+        logResposta('Carrinho > GET /itens?usuarioId=1', data);
+      } catch (erro) {
+        logResposta('Erro em Carrinho > GET /itens', { erro: erro.message });
+      }
+    }
+
+    async function criarPedido() {
+      try {
+        const payload = {
+          clienteNome: 'Cliente Demo',
+          valorTotal: 149.9,
+          status: 'aberto'
+        };
+        const data = await requestJSON(`${PEDIDOS_API}/pedidos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        logResposta('Pedidos > POST /pedidos', data);
+      } catch (erro) {
+        logResposta('Erro em Pedidos > POST /pedidos', { erro: erro.message });
+      }
+    }
+
+    async function listarPedidos() {
+      try {
+        const data = await requestJSON(`${PEDIDOS_API}/pedidos`);
+        logResposta('Pedidos > GET /pedidos', data);
+      } catch (erro) {
+        logResposta('Erro em Pedidos > GET /pedidos', { erro: erro.message });
+      }
     }
   </script>
-</body>
-</html>
