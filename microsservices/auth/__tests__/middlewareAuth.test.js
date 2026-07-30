@@ -4,9 +4,9 @@ jest.mock('jsonwebtoken', () => ({
   verify: (...args) => mockVerify(...args)
 }));
 
-const validarToken = require('../middlewareAuth');
+const authenticateToken = require('../middlewareAuth');
 
-describe('middlewareAuth validarToken', () => {
+describe('middlewareAuth authenticateToken', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -31,10 +31,10 @@ describe('middlewareAuth validarToken', () => {
     const res = criarRes();
     const next = jest.fn();
 
-    validarToken(req, res, next);
+    authenticateToken(req, res, next);
 
     expect(res.statusCode).toBe(401);
-    expect(res.body.erro).toMatch(/Token não fornecido/i);
+    expect(res.body.error).toMatch(/Token não fornecido/i);
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -43,14 +43,14 @@ describe('middlewareAuth validarToken', () => {
     const res = criarRes();
     const next = jest.fn();
 
-    mockVerify.mockImplementationOnce(() => {
-      throw new Error('jwt malformed');
+    mockVerify.mockImplementationOnce((_token, _secret, callback) => {
+      callback(new Error('jwt malformed'));
     });
 
-    validarToken(req, res, next);
+    authenticateToken(req, res, next);
 
     expect(res.statusCode).toBe(403);
-    expect(res.body.erro).toMatch(/inválido/i);
+    expect(res.body.error).toMatch(/inválido/i);
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -59,11 +59,13 @@ describe('middlewareAuth validarToken', () => {
     const res = criarRes();
     const next = jest.fn();
 
-    mockVerify.mockReturnValueOnce({ id: 1, email: 'user@exemplo.com' });
+    mockVerify.mockImplementationOnce((_token, _secret, callback) => {
+      callback(null, { id: 1, email: 'user@exemplo.com' });
+    });
 
-    validarToken(req, res, next);
+    authenticateToken(req, res, next);
 
-    expect(req.usuario).toEqual({ id: 1, email: 'user@exemplo.com' });
+    expect(req.user).toEqual({ id: 1, email: 'user@exemplo.com' });
     expect(next).toHaveBeenCalledTimes(1);
   });
 });
