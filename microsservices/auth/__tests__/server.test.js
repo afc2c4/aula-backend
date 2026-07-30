@@ -1,5 +1,4 @@
 const request = require('supertest');
-
 const mockHash = jest.fn();
 const mockCompare = jest.fn();
 const mockSign = jest.fn();

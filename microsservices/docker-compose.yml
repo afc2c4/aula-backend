@@ -1,34 +1,20 @@
-version: '3.8'
-
 services:
-  # Microsserviço de Autenticação (Gera os tokens JWT)
   auth-service:
     build: ./auth
     ports:
       - "3003:3003"
-    environment:
-      - PORT=3003
-      - HOST=0.0.0.0
-      - JWT_SECRET=minha_chave_secreta_super_segura_123
 
-  # Microsserviço de Carrinho (SQLite)
-  carrinho-service:
-    build: ./carrinho
-    ports:
-      - "3002:3002"
-    environment:
-      - PORT=3002
-
-  # Microsserviço de Catálogo (MongoDB)
   catalogo-service:
     build: ./catalogo
     ports:
       - "3001:3001"
 
-  # Microsserviço de Pedidos (MySQL)
+  carrinho-service:
+    build: ./carrinho
+    ports:
+      - "3002:3002"
+
   pedidos-service:
     build: ./pedidos
     ports:
       - "3004:3004"
-    environment:
-      - PORT=3004

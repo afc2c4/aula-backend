@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Rendimento</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>Rendimento Financeiro</h1>
+
+      <form id="form-calculo" class="form" novalidate>
+        <label for="salario">Salario base (R$)</label>
+        <input id="salario" name="salario" type="number" min="0" step="0.01" required />
+
+        <label for="horasExtras">Horas extras</label>
+        <input id="horasExtras" name="horasExtras" type="number" min="0" step="0.01" required />
+
+        <label for="valorHoraExtra">Valor da hora extra (R$)</label>
+        <input id="valorHoraExtra" name="valorHoraExtra" type="number" min="0" step="0.01" required />
+
+        <label for="impostos">Impostos (%)</label>
+        <input id="impostos" name="impostos" type="number" min="0" max="100" step="0.01" required />
+
+        <button type="submit">Calcular</button>
+      </form>
+
+      <section class="resultado" aria-live="polite">
+        <p><strong>Total bruto:</strong> <span id="totalBruto">R$ 0,00</span></p>
+        <p><strong>Total de impostos:</strong> <span id="totalImpostos">R$ 0,00</span></p>
+        <p><strong>Total liquido:</strong> <span id="totalLiquido">R$ 0,00</span></p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
